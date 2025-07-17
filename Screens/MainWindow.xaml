@@ -1,0 +1,160 @@
+﻿<Window x:Class="DesktopPortal.Screens.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+        Title="Desktop Portal" Height="800" Width="1200"
+        WindowStartupLocation="CenterScreen"
+        Background="White"
+        KeyDown="Window_KeyDown"
+        FocusManager.FocusedElement="{Binding RelativeSource={RelativeSource Self}}">
+
+
+    <Window.Resources>
+        <!-- Standard Button Style -->
+        <Style x:Key="ToolbarButtonStyle" TargetType="Button">
+            <Setter Property="Margin" Value="1,0"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="Background" Value="#ccdddddd"/>
+            <Setter Property="BorderBrush" Value="#ccc"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="7,4"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="25" VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Margin="{TemplateBinding Padding}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#fff"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#eef"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ToggleButton Style -->
+        <Style x:Key="ToolbarToggleButtonStyle" TargetType="ToggleButton">
+            <Setter Property="Margin" Value="0,0,5,0"/>
+            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="Background" Value="#dddddd"/>
+            <Setter Property="BorderBrush" Value="#ccc"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="7"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border x:Name="border"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="25">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Margin="{TemplateBinding Padding}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#fff"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#d0f0d0"/>
+                                <Setter Property="Foreground" Value="#0a0"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#d0f0d0"/>
+                            </Trigger>
+                            <!--<Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#fff"/>
+                            </Trigger>
+                            -->
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+
+
+
+    <DockPanel>
+        <!-- Toolbar -->
+        <Grid DockPanel.Dock="Top" Background="#aaf2f2f2" Height="40" Name="TopBar">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Left Buttons -->
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="10,0,0,0" Grid.Column="0">
+                <Button Name="BackButton" Content="←" Click="BackButton_Click" ToolTip="Go Back (Alt + ←)" Style="{StaticResource ToolbarButtonStyle}"/>
+                <Button Name="ForwardButton" Content="→" Click="ForwardButton_Click" ToolTip="Go Forward (Alt + →)" Style="{StaticResource ToolbarButtonStyle}" />
+                <Button Name="RefreshButton" Content="⟳" Click="RefreshButton_Click" ToolTip="Refresh (F5 or Ctrl + R)" Style="{StaticResource ToolbarButtonStyle}"/>
+                <Button Name="HomeButton" Content="⌂" Click="HomeButton_Click" ToolTip="Homepage (Alt + H)" Style="{StaticResource ToolbarButtonStyle}"/>
+                <Button Name="ExitButton" Content="✖ Exit" Visibility="Collapsed" Click="ExitButton_Click" ToolTip="Close App (Alt + F4)" Style="{StaticResource ToolbarButtonStyle}"/>
+            </StackPanel>
+
+            <!-- URL Bar (Stretched) -->
+            <Border Grid.Column="1"
+                VerticalAlignment="Center"
+                Margin="10,0"
+                Background="White"
+                CornerRadius="10"
+                BorderBrush="#ccc"
+                BorderThickness="1"
+                Height="28"
+                Name="UrlPanel">
+                <TextBox Name="UrlTextBox"
+                 FontSize="13"
+                 Background="Transparent"
+                 Foreground="#333"
+                 BorderThickness="0"
+                 IsReadOnly="True"
+                 KeyDown="UrlTextBox_KeyDown"
+                 VerticalContentAlignment="Center"
+                 Padding="10,0"
+                 ToolTip="Current Page URL" />
+            </Border>
+
+
+            <!-- Right Side -->
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,10,0" Grid.Column="2">
+                <ToggleButton x:Name="AutoLoginToggle"
+                      IsChecked="False"
+                      Style="{StaticResource ToolbarToggleButtonStyle}"
+                      Checked="AutoLoginToggle_Checked"
+                      Unchecked="AutoLoginToggle_Checked"
+                      ToolTip="Save login info for next time">
+                    <TextBlock Text="🔁"/>
+                </ToggleButton>
+                <Button Name="SettingsButton" Content="⚙" Click="SettingsButton_Click" Margin="0" ToolTip="Open Settings" Style="{StaticResource ToolbarButtonStyle}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </StackPanel>
+        </Grid>
+
+
+        <!-- Progress Bar -->
+        <ProgressBar Name="LoadingBar"
+                     DockPanel.Dock="Top"
+                     Height="1"
+                     IsIndeterminate="True"
+                     Foreground="#8A1538"
+                     Visibility="Hidden" />
+
+        <!-- WebView -->
+        <wv2:WebView2 Name="webView" />
+    </DockPanel>
+</Window>

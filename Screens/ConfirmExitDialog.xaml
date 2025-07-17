@@ -1,0 +1,23 @@
+﻿<Window x:Class="DesktopPortal.Screens.ConfirmExitDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Exit Confirmation"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize" KeyDown="Window_KeyDown" PreviewKeyDown="Window_PreviewKeyDown" 
+        SizeToContent="WidthAndHeight"
+        WindowStyle="ToolWindow"
+        Background="White">
+
+    <StackPanel Margin="20">
+        <TextBlock Text="Are you sure you want to exit?" 
+                   FontSize="16" Margin="0,0,0,0"/>
+
+        <CheckBox x:Name="DontAskAgainCheckBox" 
+                  Content="Don't ask me again" Margin="0,20,0,20" TabIndex="2"/>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Button Content="Yes" Width="70" Margin="0,0,10,0" Click="Yes_Click" IsDefault="True" TabIndex="2"/>
+            <Button Content="No" Width="70" Click="No_Click" IsCancel="True" TabIndex="3"/>
+        </StackPanel>
+    </StackPanel>
+</Window>
